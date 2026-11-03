@@ -3,21 +3,22 @@
 #include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/keys.h>
 
-#define BASE   0
-#define LOWER  1
-#define RAISE  2
-#define EXTRA  3
+#define BASE     0
+#define COLEMAK  1
+#define LOWER    2
+#define RAISE    3
+#define EXTRA    4
 
-// Combos: dos teclas juntas en la base. Posiciones:
+// Combos: dos teclas juntas, solo en la capa base indicada. Posiciones:
 //  0  1  2  3  4  5     6  7  8  9 10 11
 // 12 13 14 15 16 17    18 19 20 21 22 23
 // 24 25 26 27 28 29    30 31 32 33 34 35
 //          36 37 38    39 40 41
-#define COMBO(NAME, BINDING, KEYS) \
+#define COMBO(NAME, BINDING, KEYS, LAYER) \
     NAME { \
         timeout-ms = <35>; \
         key-positions = <KEYS>; \
-        layers = <BASE>; \
+        layers = <LAYER>; \
         bindings = <BINDING>; \
     };
 
@@ -82,17 +83,29 @@
 
     combos {
         compatible = "zmk,combos";
-        COMBO(c_paren,   &m_paren,   19 20)   // J + K  ->  ()
-        COMBO(c_brace,   &m_brace,   20 21)   // K + L  ->  {}
-        COMBO(c_bracket, &m_bracket, 31 32)   // M + ,  ->  []
-        COMBO(c_eqeq,    &m_eqeq,    26 27)   // X + C  ->  ==
-        COMBO(c_lte,     &m_lte,     27 28)   // C + V  ->  <=
-        COMBO(c_gte,     &m_gte,     28 29)   // V + B  ->  >=
-        COMBO(c_neq,     &m_neq,     14 15)   // S + D  ->  !=
-        COMBO(c_pluseq,  &m_pluseq,  15 16)   // D + F  ->  +=
-        COMBO(c_minuseq, &m_minuseq, 16 17)   // F + G  ->  -=
-        COMBO(c_dslash,  &m_dslash,  32 33)   // , + .  ->  //
-        COMBO(c_dstar,   &m_dstar,   30 31)   // N + M  ->  **
+        COMBO(c_paren, &m_paren, 19 20, BASE)   // J + K  ->  ()
+        COMBO(c_brace, &m_brace, 20 21, BASE)   // K + L  ->  {}
+        COMBO(c_bracket, &m_bracket, 31 32, BASE)   // M + ,  ->  []
+        COMBO(c_eqeq, &m_eqeq, 26 27, BASE)   // X + C  ->  ==
+        COMBO(c_lte, &m_lte, 27 28, BASE)   // C + V  ->  <=
+        COMBO(c_gte, &m_gte, 28 29, BASE)   // V + B  ->  >=
+        COMBO(c_neq, &m_neq, 14 15, BASE)   // S + D  ->  !=
+        COMBO(c_pluseq, &m_pluseq, 15 16, BASE)   // D + F  ->  +=
+        COMBO(c_minuseq, &m_minuseq, 16 17, BASE)   // F + G  ->  -=
+        COMBO(c_dslash, &m_dslash, 32 33, BASE)   // , + .  ->  //
+        COMBO(c_dstar, &m_dstar, 30 31, BASE)   // N + M  ->  **
+        // Colemak-DH: las posiciones que en Colemak caen sobre pares comunes se movieron.
+        COMBO(k_neq,     &m_neq,     1 2,   COLEMAK)   // Q + W  ->  !=
+        COMBO(k_pluseq,  &m_pluseq,  2 3,   COLEMAK)   // W + F  ->  +=
+        COMBO(k_paren,   &m_paren,   3 4,   COLEMAK)   // F + P  ->  ()
+        COMBO(k_brace,   &m_brace,   4 5,   COLEMAK)   // P + B  ->  {}
+        COMBO(k_minuseq, &m_minuseq, 16 17, COLEMAK)   // T + G  ->  -=
+        COMBO(k_eqeq,    &m_eqeq,    26 27, COLEMAK)   // X + C  ->  ==
+        COMBO(k_lte,     &m_lte,     27 28, COLEMAK)   // C + D  ->  <=
+        COMBO(k_gte,     &m_gte,     28 29, COLEMAK)   // D + V  ->  >=
+        COMBO(k_dstar,   &m_dstar,   30 31, COLEMAK)   // K + H  ->  **
+        COMBO(k_bracket, &m_bracket, 31 32, COLEMAK)   // H + ,  ->  []
+        COMBO(k_dslash,  &m_dslash,  32 33, COLEMAK)   // , + .  ->  //
     };
 
     behaviors {
@@ -119,18 +132,30 @@
             >;
         };
 
-        // 1: Lower (pulgar derecho). Izquierda: simbolos de programacion. Derecha: navegacion.
+        // 1: Colemak-DH. Solo cambian las letras; el resto viene de la base.
+        // Se prende/apaga en Extra (Raise + Lower), tecla izquierda de la fila del medio.
+        colemak_layer {
+            display-name = "Colemak";
+            bindings = <
+&trans  &kp Q  &kp W  &kp F  &kp P  &kp B        &kp J  &kp L  &kp U  &kp Y  &kp SEMI  &trans
+&trans  &kp A  &kp R  &kp S  &kp T  &kp G        &kp M  &kp N  &kp E  &kp I  &kp O     &trans
+&trans  &kp Z  &kp X  &kp C  &kp D  &kp V        &kp K  &kp H  &trans &trans &trans    &trans
+                    &trans  &trans  &trans        &trans  &trans  &trans
+            >;
+        };
+
+        // 2: Lower (pulgar derecho). Izquierda: simbolos de programacion. Derecha: navegacion.
         lower_layer {
             display-name = "Lower";
             bindings = <
 &kp GRAVE  &kp EXCL  &kp AMPS   &kp LBRC  &kp RBRC  &kp PIPE      &kp AT    &kp PRCNT  &kp CARET  &kp TILDE  &none     &kp DEL
-&kp DLLR   &kp PLUS  &kp EQUAL  &kp LPAR  &kp RPAR  &kp MINUS     &none     &kp UP     &none      &kp PG_UP  &kp HOME  &none
-&kp HASH   &kp STAR  &kp UNDER  &kp LBKT  &kp RBKT  &kp BSLH      &kp LEFT  &kp DOWN   &kp RIGHT  &kp PG_DN  &kp END   &none
+&kp DLLR   &kp PLUS  &kp EQUAL  &kp LPAR  &kp RPAR  &kp MINUS     &none     &kp UP     &none      &none      &none     &none
+&kp HASH   &kp STAR  &kp UNDER  &kp LBKT  &kp RBKT  &kp BSLH      &kp LEFT  &kp DOWN   &kp RIGHT  &none      &none     &none
                         &kp LGUI  &trans  &kp SPACE               &kp RET  &trans  &kp RALT
             >;
         };
 
-        // 2: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
+        // 3: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
         // VS Code: Alt+Shift+F formatear, Ctrl+F5 ejecutar, Ctrl+Alt+I Copilot,
         //          Ctrl+L sel. linea, Ctrl+Shift+K borrar linea, Ctrl+Shift+L sel. coincidencias, Shift+Alt+I cursores.
         raise_layer {
@@ -143,12 +168,12 @@
             >;
         };
 
-        // 3: Extra (Raise + Lower). F1-F12, Studio, y teclas delicadas.
+        // 4: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak y teclas delicadas.
         extra_layer {
             display-name = "Extra";
             bindings = <
 &studio_unlock  &none  &kp F1   &kp F2   &kp F3   &kp F4      &none             &none              &none  &none  &none  &kp LA(F4)
-&none           &none  &kp F5   &kp F6   &kp F7   &kp F8      &none             &none              &none  &none  &none  &kp LC(LA(DEL))
+&tog COLEMAK    &none  &kp F5   &kp F6   &kp F7   &kp F8      &none             &none              &none  &none  &none  &kp LC(LA(DEL))
 &none           &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &bt BT_CLR
                                &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
             >;
