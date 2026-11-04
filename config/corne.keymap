@@ -79,6 +79,15 @@
             #binding-cells = <0>;
             bindings = <&macro_tap &kp STAR &kp STAR>;
         };
+        // Toca una sola vez la combinacion que recibe (para que mantener no la repita)
+        tocar_una_vez: tocar_una_vez {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings
+                = <&macro_param_1to1>
+                , <&macro_tap &kp MACRO_PLACEHOLDER>
+                ;
+        };
         // Handy traducir: mantiene Ctrl+Shift+Espacio mientras se mantiene la Q.
         // Al apretar: Ctrl, Shift, Espacio. Al soltar: primero Espacio y despues los modificadores.
         m_traducir: m_traducir {
@@ -135,6 +144,15 @@
             bindings = <&kp>, <&kp>;
         };
 
+        // Z X C V R: toque = letra, mantener = deshacer / cortar / copiar / pegar / renombrar (F2)
+        edicion: edicion {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&tocar_una_vez>, <&kp>;
+        };
+
         // Q: toque = q, mantener = transcribir y traducir con Handy (Ctrl+Shift+Space)
         q_traducir: q_traducir {
             compatible = "zmk,behavior-hold-tap";
@@ -158,13 +176,14 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: mantener = Ctrl, toque = Tab.
+        // Z X C V mantenidas: deshacer, cortar, copiar, pegar. R mantenida: renombrar (F2).
         // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
-&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
+&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &kp E  &edicion F2 R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
 &td_lshft_caps  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
-&mt LCTRL TAB   &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
+&mt LCTRL TAB   &edicion LC(Z) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
                    &kp LALT  &mo RAISE  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
             >;
         };
@@ -175,8 +194,8 @@
             display-name = "Colemak";
             bindings = <
 &trans  &q_traducir 0 Q  &kp W  &kp F  &kp P  &kp B        &kp J  &kp L  &kp U  &kp Y  &kp SEMI  &trans
-&trans  &kp A  &kp R  &kp S  &kp T  &kp G        &kp M  &kp N  &kp E  &kp I  &kp O     &trans
-&trans  &kp Z  &kp X  &kp C  &kp D  &kp V        &kp K  &kp H  &trans &trans &trans    &trans
+&trans  &kp A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &kp N  &kp E  &kp I  &kp O     &trans
+&trans  &edicion LC(Z) Z  &edicion LC(X) X  &edicion LC(C) C  &kp D  &edicion LC(V) V        &kp K  &kp H  &trans &trans &trans    &trans
                     &trans  &trans  &trans        &trans  &trans  &trans
             >;
         };
