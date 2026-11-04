@@ -1,0 +1,5 @@
+# nice!view con imagen propia en la mitad derecha (copia del shield nice_view de ZMK v0.3)
+# SPDX-License-Identifier: MIT
+
+config SHIELD_NICE_VIEW_CUSTOM
+    def_bool $(shields_list_contains,nice_view_custom)
