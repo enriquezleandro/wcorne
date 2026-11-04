@@ -94,6 +94,8 @@
         COMBO(c_minuseq, &m_minuseq, 16 17, BASE)   // F + G  ->  -=
         COMBO(c_dslash, &m_dslash, 32 33, BASE)   // , + .  ->  //
         COMBO(c_dstar, &m_dstar, 30 31, BASE)   // N + M  ->  **
+        // Handy: Esc + Q mantenidas = transcribir y traducir (Ctrl+Shift+Space)
+        COMBO(c_handy_traducir, &kp LC(LS(SPACE)), 0 1, BASE COLEMAK)   // Esc + Q
         // Colemak-DH: las posiciones que en Colemak caen sobre pares comunes se movieron.
         COMBO(k_neq,     &m_neq,     1 2,   COLEMAK)   // Q + W  ->  !=
         COMBO(k_pluseq,  &m_pluseq,  2 3,   COLEMAK)   // W + F  ->  +=
@@ -109,6 +111,15 @@
     };
 
     behaviors {
+        // Esc: toque = Esc, mantener = transcribir con Handy (Ctrl+Space)
+        esc_dictar: esc_dictar {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <250>;
+            bindings = <&kp>, <&kp>;
+        };
+
         td_lshft_caps: td_lshft_caps {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
@@ -122,10 +133,11 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: mantener = Ctrl, toque = Tab.
+        // Arriba izq: toque = Esc, mantener = transcribir (Handy). Esc + Q mantenidas = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
-&kp ESC         &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
+&esc_dictar LC(SPACE) ESC  &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
 &td_lshft_caps  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
 &mt LCTRL TAB   &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
                    &kp LALT  &mo RAISE  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
