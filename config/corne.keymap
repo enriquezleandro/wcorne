@@ -128,6 +128,29 @@
                 , <&macro_release &kp LALT>
                 ;
         };
+        // Signos de apertura por codigo Alt: Alt+0191 = signo de pregunta invertido, Alt+0161 = exclamacion invertida
+        m_abre_preg: m_abre_preg {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N1 &kp KP_N9 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_abre_excl: m_abre_excl {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N1 &kp KP_N6 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
     };
 
     combos {
@@ -218,6 +241,29 @@
             bindings = <&enie_mm>, <&kp>;
         };
 
+        // / : toque = barra (con Shift, ?), mantener = signo de pregunta de apertura (con o sin Shift). Solo Windows.
+        preg_mm: preg_mm {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_abre_preg>, <&m_abre_preg>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        slash_preg: slash_preg {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&preg_mm>, <&kp>;
+        };
+        // ! en Lower: toque = !, mantener = exclamacion de apertura. Solo Windows.
+        excl_abre: excl_abre {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&m_abre_excl>, <&kp>;
+        };
+
 
         td_lshft_caps: td_lshft_caps {
             compatible = "zmk,behavior-tap-dance";
@@ -232,14 +278,14 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: Ctrl; con Alt mantenido = Tab (Alt+Tab).
-        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), E Explorador (Win+E), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241).
+        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), E Explorador (Win+E), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
         // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
 &esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &edicion LG(E) E  &edicion F2 R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
 &td_lshft_caps  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp SQT
-&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
+&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp TAB
                    &kp LALT  &mo RAISE  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
             >;
         };
@@ -260,7 +306,7 @@
         lower_layer {
             display-name = "Lower";
             bindings = <
-&kp GRAVE  &kp EXCL  &kp AMPS   &kp LBRC  &kp RBRC  &kp PIPE      &kp AT    &kp PRCNT  &kp CARET  &kp TILDE  &none     &kp DEL
+&kp GRAVE  &excl_abre 0 EXCL  &kp AMPS   &kp LBRC  &kp RBRC  &kp PIPE      &kp AT    &kp PRCNT  &kp CARET  &kp TILDE  &none     &kp DEL
 &kp DLLR   &kp PLUS  &kp EQUAL  &kp LPAR  &kp RPAR  &kp MINUS     &none     &kp UP     &none      &none      &none     &none
 &kp HASH   &kp STAR  &kp UNDER  &kp LBKT  &kp RBKT  &kp BSLH      &kp LEFT  &kp DOWN   &kp RIGHT  &none      &none     &none
                         &kp LGUI  &trans  &kp SPACE               &kp RET  &trans  &kp RALT
