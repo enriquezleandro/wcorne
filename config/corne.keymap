@@ -144,7 +144,7 @@
             bindings = <&kp>, <&kp>;
         };
 
-        // Z X C V R E: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E)
+        // Z X C V R E N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E) / nueva carpeta (Ctrl+Shift+N)
         edicion: edicion {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -176,14 +176,14 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: mantener = Ctrl, toque = Tab.
-        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), E Explorador (Win+E).
+        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), E Explorador (Win+E), N nueva carpeta (Ctrl+Shift+N).
         // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
 &esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &edicion LG(E) E  &edicion F2 R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
 &td_lshft_caps  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
-&mt LCTRL TAB   &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
+&mt LCTRL TAB   &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
                    &kp LALT  &mo RAISE  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
             >;
         };
@@ -194,7 +194,7 @@
             display-name = "Colemak";
             bindings = <
 &trans  &q_traducir 0 Q  &kp W  &kp F  &kp P  &kp B        &kp J  &kp L  &kp U  &kp Y  &kp SEMI  &trans
-&trans  &kp A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &kp N  &edicion LG(E) E  &kp I  &kp O     &trans
+&trans  &kp A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &edicion LC(LS(N)) N  &edicion LG(E) E  &kp I  &kp O     &trans
 &trans  &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &kp D  &edicion LC(V) V        &kp K  &kp H  &trans &trans &trans    &trans
                     &trans  &trans  &trans        &trans  &trans  &trans
             >;
