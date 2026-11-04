@@ -153,6 +153,15 @@
             bindings = <&tocar_una_vez>, <&kp>;
         };
 
+        // Ctrl: sola = Ctrl normal; con Alt mantenido = Tab (Alt+Tab con la mano izquierda)
+        ctrl_alttab: ctrl_alttab {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LCTRL>, <&kp TAB>;
+            mods = <(MOD_LALT|MOD_RALT)>;
+            keep-mods = <(MOD_LALT|MOD_RALT)>;
+        };
+
         // Raise 1 2 3: toque = numero, mantener = Alt+1 / Alt+2 / Alt+3 (SketchUp: agrupar, desagrupar, componente)
         num_alt: num_alt {
             compatible = "zmk,behavior-hold-tap";
@@ -184,7 +193,7 @@
         compatible = "zmk,keymap";
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
-        // Abajo izq: mantener = Ctrl, toque = Tab.
+        // Abajo izq: Ctrl; con Alt mantenido = Tab (Alt+Tab).
         // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), E Explorador (Win+E), N nueva carpeta (Ctrl+Shift+N).
         // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
         base_layer {
@@ -192,7 +201,7 @@
             bindings = <
 &esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &edicion LG(E) E  &edicion F2 R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
 &td_lshft_caps  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
-&mt LCTRL TAB   &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
+&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
                    &kp LALT  &mo RAISE  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
             >;
         };
