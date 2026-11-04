@@ -142,6 +142,15 @@
             bindings = <&kp>, <&kp>;
         };
 
+        // Esc con Alt ya apretado = traducir (sin depender de apretar las dos a la vez).
+        // Sin Alt = Esc normal / mantener para transcribir.
+        esc_handy: esc_handy {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&esc_dictar LC(SPACE) ESC>, <&m_traducir>;
+            mods = <(MOD_LALT)>;
+        };
+
         td_lshft_caps: td_lshft_caps {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
@@ -155,11 +164,11 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: mantener = Ctrl, toque = Tab.
-        // Arriba izq: toque = Esc, mantener = transcribir (Handy). Esc + Alt mantenidas = traducir.
+        // Arriba izq: toque = Esc, mantener = transcribir (Handy). Alt + Esc mantenidas = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
-&esc_dictar LC(SPACE) ESC  &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
+&esc_handy      &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
 &td_lshft_caps  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &kp SEMI  &kp SQT
 &mt LCTRL TAB   &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &kp TAB
                    &kp LALT  &mo RAISE  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
