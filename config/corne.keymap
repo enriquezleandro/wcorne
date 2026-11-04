@@ -156,25 +156,25 @@
         };
 
         // 3: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
-        // VS Code: Alt+Shift+F formatear, Ctrl+F5 ejecutar, Ctrl+Alt+I Copilot,
-        //          Ctrl+L sel. linea, Ctrl+Shift+K borrar linea, Ctrl+Shift+L sel. coincidencias, Shift+Alt+I cursores.
+        // VS Code (fila de abajo): Ctrl+L sel. linea, Ctrl+Shift+K borrar linea, Ctrl+Shift+L sel. coincidencias,
+        //          Shift+Alt+I cursores, Alt+Shift+F formatear, Ctrl+F5 ejecutar.
         raise_layer {
             display-name = "Raise";
             bindings = <
 &kp SQT  &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp C_PLAY_PAUSE  &kp C_PREV      &kp C_NEXT       &kp C_MUTE     &kp C_VOL_DN    &kp C_VOL_UP
-&kp DQT  &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &bt BT_PRV        &bt BT_NXT      &kp LA(LS(F))    &kp LC(F5)     &kp LC(LA(I))   &none
-&kp RET  &kp BSPC   &kp DOT   &kp N1  &kp N2  &kp N3        &kp LC(L)         &kp LC(LS(K))   &kp LC(LS(L))    &kp LA(LS(I))  &none           &none
+&kp DQT  &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &bt BT_PRV        &bt BT_NXT      &none            &kp LA(F4)     &kp LC(LA(DEL)) &bt BT_CLR
+&kp RET  &kp BSPC   &kp DOT   &kp N1  &kp N2  &kp N3        &kp LC(L)         &kp LC(LS(K))   &kp LC(LS(L))    &kp LA(LS(I))  &kp LA(LS(F))   &kp LC(F5)
                          &kp LGUI  &trans  &kp N0           &kp RET  &trans  &kp RALT
             >;
         };
 
-        // 4: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak y teclas delicadas.
+        // 4: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak y pantallas.
         extra_layer {
             display-name = "Extra";
             bindings = <
-&studio_unlock  &none  &kp F1   &kp F2   &kp F3   &kp F4      &none             &none              &none  &none  &none  &kp LA(F4)
-&tog COLEMAK    &none  &kp F5   &kp F6   &kp F7   &kp F8      &none             &none              &none  &none  &none  &kp LC(LA(DEL))
-&none           &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &bt BT_CLR
+&studio_unlock  &none  &kp F1   &kp F2   &kp F3   &kp F4      &none             &none              &none  &none  &none  &none
+&tog COLEMAK    &none  &kp F5   &kp F6   &kp F7   &kp F8      &none             &none              &none  &none  &none  &none
+&none           &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &none
                                &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
             >;
         };
