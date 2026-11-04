@@ -153,6 +153,15 @@
             bindings = <&tocar_una_vez>, <&kp>;
         };
 
+        // Raise 1 2 3: toque = numero, mantener = Alt+1 / Alt+2 / Alt+3 (SketchUp: agrupar, desagrupar, componente)
+        num_alt: num_alt {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&tocar_una_vez>, <&kp>;
+        };
+
         // Q: toque = q, mantener = transcribir y traducir con Handy (Ctrl+Shift+Space)
         q_traducir: q_traducir {
             compatible = "zmk,behavior-hold-tap";
@@ -219,7 +228,7 @@
             bindings = <
 &kp LA(F4)       &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp C_PLAY_PAUSE  &kp C_PREV      &kp C_NEXT       &kp C_MUTE     &kp C_VOL_DN    &kp C_VOL_UP
 &kp DEL          &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &bt BT_PRV        &bt BT_NXT      &none            &none          &none           &bt BT_CLR
-&kp RET          &kp BSPC   &kp DOT   &kp N1  &kp N2  &kp N3        &kp LC(L)         &kp LC(LS(K))   &kp LC(LS(L))    &kp LA(LS(I))  &kp LA(LS(F))   &kp LC(F5)
+&kp RET          &kp BSPC   &kp DOT   &num_alt LA(N1) N1  &num_alt LA(N2) N2  &num_alt LA(N3) N3        &kp LC(L)         &kp LC(LS(K))   &kp LC(LS(L))    &kp LA(LS(I))  &kp LA(LS(F))   &kp LC(F5)
                          &kp LGUI  &trans  &kp N0           &kp RET  &trans  &kp RALT
             >;
         };
