@@ -94,8 +94,13 @@
         COMBO(c_minuseq, &m_minuseq, 16 17, BASE)   // F + G  ->  -=
         COMBO(c_dslash, &m_dslash, 32 33, BASE)   // , + .  ->  //
         COMBO(c_dstar, &m_dstar, 30 31, BASE)   // N + M  ->  **
-        // Handy: Esc + Q mantenidas = transcribir y traducir (Ctrl+Shift+Space)
-        COMBO(c_handy_traducir, &kp LC(LS(SPACE)), 0 1, BASE COLEMAK)   // Esc + Q
+        // Handy: Esc + Alt (pulgar izquierdo) mantenidas = transcribir y traducir (Ctrl+Shift+Space)
+        c_handy_traducir {   // margen amplio (150 ms): esta combinacion no aparece al escribir
+            timeout-ms = <150>;
+            key-positions = <0 36>;
+            layers = <BASE COLEMAK>;
+            bindings = <&kp LC(LS(SPACE))>;
+        };
         // Colemak-DH: las posiciones que en Colemak caen sobre pares comunes se movieron.
         COMBO(k_neq,     &m_neq,     1 2,   COLEMAK)   // Q + W  ->  !=
         COMBO(k_pluseq,  &m_pluseq,  2 3,   COLEMAK)   // W + F  ->  +=
@@ -133,7 +138,7 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: mantener = Ctrl, toque = Tab.
-        // Arriba izq: toque = Esc, mantener = transcribir (Handy). Esc + Q mantenidas = traducir.
+        // Arriba izq: toque = Esc, mantener = transcribir (Handy). Esc + Alt mantenidas = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
