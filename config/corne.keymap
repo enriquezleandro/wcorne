@@ -151,6 +151,117 @@
                 , <&macro_release &kp LALT>
                 ;
         };
+        // Vocales con tilde por codigo Alt (minuscula / mayuscula). Requiere Bloq Num activado.
+        m_aa: m_aa {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N5>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_aa_may: m_aa_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N1 &kp KP_N9 &kp KP_N3>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_ee: m_ee {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N3 &kp KP_N3>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_ee_may: m_ee_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N0 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_ii: m_ii {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N3 &kp KP_N7>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_ii_may: m_ii_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N0 &kp KP_N5>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_oo: m_oo {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N4 &kp KP_N3>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_oo_may: m_oo_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N1 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_uu: m_uu {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N5 &kp KP_N0>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_uu_may: m_uu_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N1 &kp KP_N8>
+                , <&macro_release &kp LALT>
+                ;
+        };
     };
 
     combos {
@@ -190,7 +301,7 @@
             bindings = <&kp>, <&kp>;
         };
 
-        // Z X C V R E N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E) / nueva carpeta (Ctrl+Shift+N)
+        // Z X C V R W N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E, en la W) / nueva carpeta (Ctrl+Shift+N)
         edicion: edicion {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -264,6 +375,73 @@
             bindings = <&m_abre_excl>, <&kp>;
         };
 
+        // Vocales: toque = vocal, mantener = vocal con tilde (con Shift, mayuscula). Solo Windows.
+        mm_a: mm_a {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_aa>, <&m_aa_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_a: tilde_a {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_a>, <&kp>;
+        };
+        mm_e: mm_e {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_ee>, <&m_ee_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_e: tilde_e {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_e>, <&kp>;
+        };
+        mm_i: mm_i {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_ii>, <&m_ii_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_i: tilde_i {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_i>, <&kp>;
+        };
+        mm_o: mm_o {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_oo>, <&m_oo_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_o: tilde_o {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_o>, <&kp>;
+        };
+        mm_u: mm_u {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_uu>, <&m_uu_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_u: tilde_u {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_u>, <&kp>;
+        };
+
 
         td_lshft_caps: td_lshft_caps {
             compatible = "zmk,behavior-tap-dance";
@@ -278,14 +456,14 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: Ctrl; con Alt mantenido = Tab (Alt+Tab).
-        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), E Explorador (Win+E), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
+        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), W Explorador (Win+E), vocales con tilde (A E I O U), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
         // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
-&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &edicion LG(E) E  &edicion F2 R  &kp T        &kp Y  &kp U  &kp I      &kp O    &kp P     &kp LGUI
-&td_lshft_caps  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp SQT
-&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp TAB
+&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &edicion LG(E) W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
+&td_lshft_caps  &tilde_a 0 A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
+&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp LGUI
                    &kp LALT  &mo RAISE  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
             >;
         };
@@ -295,8 +473,8 @@
         colemak_layer {
             display-name = "Colemak";
             bindings = <
-&trans  &q_traducir 0 Q  &kp W  &kp F  &kp P  &kp B        &kp J  &kp L  &kp U  &kp Y  &semi_enie 0 SEMI  &trans
-&trans  &kp A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &edicion LC(LS(N)) N  &edicion LG(E) E  &kp I  &kp O     &trans
+&trans  &q_traducir 0 Q  &edicion LG(E) W  &kp F  &kp P  &kp B        &kp J  &kp L  &tilde_u 0 U  &kp Y  &semi_enie 0 SEMI  &trans
+&trans  &tilde_a 0 A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &edicion LC(LS(N)) N  &tilde_e 0 E  &tilde_i 0 I  &tilde_o 0 O     &trans
 &trans  &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &kp D  &edicion LC(V) V        &kp K  &kp H  &trans &trans &trans    &trans
                     &trans  &trans  &trans        &trans  &trans  &trans
             >;
@@ -306,10 +484,10 @@
         lower_layer {
             display-name = "Lower";
             bindings = <
-&kp GRAVE  &excl_abre 0 EXCL  &kp AMPS   &kp LBRC  &kp RBRC  &kp PIPE      &kp AT    &kp PRCNT  &kp CARET  &kp TILDE  &none     &kp DEL
-&kp DLLR   &kp PLUS  &kp EQUAL  &kp LPAR  &kp RPAR  &kp MINUS     &kp DQT   &kp UP     &kp SQT      &none      &none     &none
-&kp HASH   &kp STAR  &kp UNDER  &kp LBKT  &kp RBKT  &kp BSLH      &kp LEFT  &kp DOWN   &kp RIGHT  &none      &none     &none
-                        &kp LGUI  &trans  &kp SPACE               &kp RET  &trans  &kp RALT
+&slash_preg 0 QMARK  &kp FSLH  &kp STAR  &kp AMPS  &kp LBRC  &kp RBRC      &kp LT    &kp CARET  &kp GT     &kp TILDE  &kp GRAVE  &kp DEL
+&excl_abre 0 EXCL  &kp MINUS  &kp PLUS  &kp EQUAL  &kp LPAR  &kp RPAR      &kp DQT   &kp UP     &kp SQT      &kp DLLR   &kp HASH  &none
+&kp AT     &kp UNDER  &kp BSLH  &kp PIPE  &kp LBKT  &kp RBKT      &kp LEFT  &kp DOWN   &kp RIGHT  &kp PRCNT  &none     &none
+                        &kp LGUI  &trans  &kp SPACE               &kp RET  &trans  &kp BSPC
             >;
         };
 
