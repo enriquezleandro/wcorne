@@ -269,6 +269,8 @@
         COMBO(c_paren, &m_paren, 19 20, BASE)   // J + K  ->  ()
         COMBO(c_brace, &m_brace, 20 21, BASE)   // K + L  ->  {}
         COMBO(c_bracket, &m_bracket, 31 32, BASE)   // M + ,  ->  []
+        COMBO(c_cerrar, &kp LA(F4), 1 2, BASE)   // Q + W  ->  Alt+F4 (cerrar ventana)
+        COMBO(c_del, &kp DEL, 25 26, BASE COLEMAK)   // Z + X  ->  Del
         COMBO(c_eqeq, &m_eqeq, 26 27, BASE)   // X + C  ->  ==
         COMBO(c_lte, &m_lte, 27 28, BASE)   // C + V  ->  <=
         COMBO(c_gte, &m_gte, 28 29, BASE)   // V + B  ->  >=
@@ -497,9 +499,9 @@
         raise_layer {
             display-name = "Raise";
             bindings = <
-&kp LA(F4)       &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp C_PLAY_PAUSE  &kp C_PREV      &kp C_NEXT       &kp C_MUTE     &kp C_VOL_DN    &kp C_VOL_UP
-&kp DEL          &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &bt BT_PRV        &bt BT_NXT      &none            &none          &none           &bt BT_CLR
-&edicion SQT RET  &edicion DQT BSPC  &kp DOT   &num_alt LA(N1) N1  &num_alt LA(N2) N2  &num_alt LA(N3) N3        &kp LC(L)         &kp LC(LS(K))   &kp LC(LS(L))    &kp LA(LS(I))  &kp LA(LS(F))   &kp LC(F5)
+&kp BSPC         &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp C_PLAY_PAUSE  &kp C_PREV      &kp C_NEXT       &kp C_MUTE     &kp C_VOL_DN    &kp C_VOL_UP
+&kp RET          &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &bt BT_PRV        &bt BT_NXT      &none            &none          &none           &bt BT_CLR
+&kp SQT          &kp DQT    &kp DOT   &num_alt LA(N1) N1  &num_alt LA(N2) N2  &num_alt LA(N3) N3        &kp LC(L)         &kp LC(LS(K))   &kp LC(LS(L))    &kp LA(LS(I))  &kp LA(LS(F))   &kp LC(F5)
                          &kp LGUI  &trans  &kp N0           &kp RET  &trans  &kp RALT
             >;
         };
