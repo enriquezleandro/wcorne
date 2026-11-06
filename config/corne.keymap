@@ -271,7 +271,7 @@
         COMBO(c_brace, &m_brace, 20 21, BASE)   // K + L  ->  {}
         COMBO(c_bracket, &m_bracket, 31 32, BASE)   // M + ,  ->  []
         COMBO(c_cerrar, &kp LA(F4), 1 2, BASE)   // Q + W  ->  Alt+F4 (cerrar ventana)
-        COMBO(c_del, &kp DEL, 25 26, BASE COLEMAK)   // Z + X  ->  Del
+        COMBO(c_del, &kp DEL, 25 26, BASE COLEMAK JUEGO)   // Z + X  ->  Del (tambien en modo Juego)
         COMBO(c_eqeq, &m_eqeq, 26 27, BASE)   // X + C  ->  ==
         COMBO(c_lte, &m_lte, 27 28, BASE)   // C + V  ->  <=
         COMBO(c_gte, &m_gte, 28 29, BASE)   // V + B  ->  >=
@@ -490,7 +490,7 @@
             >;
         };
 
-        // 2: Juego (D5, Lumion, juegos). Letras QWERTY normales, sin funciones al mantener y sin combos.
+        // 2: Juego (D5, Lumion, juegos). Letras QWERTY normales, sin funciones al mantener. Solo combo Z+X (Del).
         // Se prende/apaga con doble toque de Raise, o en Extra (Raise + Lower), abajo a la izquierda.
         juego_layer {
             display-name = "Juego";
