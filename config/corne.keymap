@@ -5,9 +5,10 @@
 
 #define BASE     0
 #define COLEMAK  1
-#define LOWER    2
-#define RAISE    3
-#define EXTRA    4
+#define JUEGO    2
+#define LOWER    3
+#define RAISE    4
+#define EXTRA    5
 
 // Combos: dos teclas juntas, solo en la capa base indicada. Posiciones:
 //  0  1  2  3  4  5     6  7  8  9 10 11
@@ -303,7 +304,7 @@
             bindings = <&kp>, <&kp>;
         };
 
-        // Z X C V R W N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E, en la W) / nueva carpeta (Ctrl+Shift+N)
+        // Z X C V R T N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E, en la T) / nueva carpeta (Ctrl+Shift+N)
         edicion: edicion {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -451,6 +452,13 @@
             tapping-term-ms = <200>;
             bindings = <&kp LSHFT>, <&kp CAPS>;
         };
+        // Raise: mantener = capa Raise; doble toque = prender/apagar modo Juego
+        td_raise_juego: td_raise_juego {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&mo RAISE>, <&tog JUEGO>;
+        };
     };
 
     keymap {
@@ -458,15 +466,15 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: Ctrl; con Alt mantenido = Tab (Alt+Tab).
-        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), W Explorador (Win+E), vocales con tilde (A E I O U), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
+        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), T Explorador (Win+E), vocales con tilde (A E I O U), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
         // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
-&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &edicion LG(E) W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
+&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &tilde_e 0 E  &edicion F2 R  &edicion LG(E) T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
 &td_lshft_caps  &tilde_a 0 A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
 &ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp LGUI
-                   &kp LALT  &mo RAISE  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
+                   &kp LALT  &td_raise_juego  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
             >;
         };
 
@@ -475,14 +483,26 @@
         colemak_layer {
             display-name = "Colemak";
             bindings = <
-&trans  &q_traducir 0 Q  &edicion LG(E) W  &kp F  &kp P  &kp B        &kp J  &kp L  &tilde_u 0 U  &kp Y  &semi_enie 0 SEMI  &trans
-&trans  &tilde_a 0 A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &edicion LC(LS(N)) N  &tilde_e 0 E  &tilde_i 0 I  &tilde_o 0 O     &trans
+&trans  &q_traducir 0 Q  &kp W  &kp F  &kp P  &kp B        &kp J  &kp L  &tilde_u 0 U  &kp Y  &semi_enie 0 SEMI  &trans
+&trans  &tilde_a 0 A  &edicion F2 R  &kp S  &edicion LG(E) T  &kp G        &kp M  &edicion LC(LS(N)) N  &tilde_e 0 E  &tilde_i 0 I  &tilde_o 0 O     &trans
 &trans  &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &kp D  &edicion LC(V) V        &kp K  &kp H  &trans &trans &trans    &trans
                     &trans  &trans  &trans        &trans  &trans  &trans
             >;
         };
 
-        // 2: Lower (pulgar derecho). Izquierda: simbolos de programacion. Derecha: navegacion.
+        // 2: Juego (D5, Lumion, juegos). Letras QWERTY normales, sin funciones al mantener y sin combos.
+        // Se prende/apaga con doble toque de Raise, o en Extra (Raise + Lower), abajo a la izquierda.
+        juego_layer {
+            display-name = "Juego";
+            bindings = <
+&kp ESC    &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I  &kp O  &kp P     &trans
+&kp LSHFT  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K  &kp L  &kp SEMI  &trans
+&kp LCTRL  &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &trans
+                    &trans  &trans  &trans        &trans  &trans  &trans
+            >;
+        };
+
+        // 3: Lower (pulgar derecho). Izquierda: simbolos de programacion. Derecha: navegacion.
         lower_layer {
             display-name = "Lower";
             bindings = <
@@ -493,7 +513,7 @@
             >;
         };
 
-        // 3: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
+        // 4: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
         // VS Code (fila de abajo): Ctrl+L sel. linea, Ctrl+Shift+K borrar linea, Ctrl+Shift+L sel. coincidencias,
         //          Shift+Alt+I cursores, Alt+Shift+F formatear, Ctrl+F5 ejecutar.
         raise_layer {
@@ -506,13 +526,13 @@
             >;
         };
 
-        // 4: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak y pantallas.
+        // 5: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak, modo Juego y pantallas.
         extra_layer {
             display-name = "Extra";
             bindings = <
 &studio_unlock  &none  &kp F1   &kp F2   &kp F3   &kp F4      &none             &none              &none  &none  &none  &none
 &tog COLEMAK    &none  &kp F5   &kp F6   &kp F7   &kp F8      &none             &none              &none  &none  &none  &none
-&none           &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &none
+&tog JUEGO      &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &none
                                &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
             >;
         };
