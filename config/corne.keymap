@@ -304,7 +304,7 @@
             bindings = <&kp>, <&kp>;
         };
 
-        // Z X C V R T N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E, en la T) / nueva carpeta (Ctrl+Shift+N)
+        // Z X C V R F N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E, en la F) / nueva carpeta (Ctrl+Shift+N)
         edicion: edicion {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -466,13 +466,13 @@
 
         // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
         // Abajo izq: Ctrl; con Alt mantenido = Tab (Alt+Tab).
-        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), T Explorador (Win+E), vocales con tilde (A E I O U), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
+        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), F Explorador (Win+E), vocales con tilde (A E I O U), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
         // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
         base_layer {
             display-name = "Base";
             bindings = <
-&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &tilde_e 0 E  &edicion F2 R  &edicion LG(E) T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
-&td_lshft_caps  &tilde_a 0 A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
+&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
+&td_lshft_caps  &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
 &ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp LGUI
                    &kp LALT  &td_raise_juego  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
             >;
@@ -483,8 +483,8 @@
         colemak_layer {
             display-name = "Colemak";
             bindings = <
-&trans  &q_traducir 0 Q  &kp W  &kp F  &kp P  &kp B        &kp J  &kp L  &tilde_u 0 U  &kp Y  &semi_enie 0 SEMI  &trans
-&trans  &tilde_a 0 A  &edicion F2 R  &kp S  &edicion LG(E) T  &kp G        &kp M  &edicion LC(LS(N)) N  &tilde_e 0 E  &tilde_i 0 I  &tilde_o 0 O     &trans
+&trans  &q_traducir 0 Q  &kp W  &edicion LG(E) F  &kp P  &kp B        &kp J  &kp L  &tilde_u 0 U  &kp Y  &semi_enie 0 SEMI  &trans
+&trans  &tilde_a 0 A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &edicion LC(LS(N)) N  &tilde_e 0 E  &tilde_i 0 I  &tilde_o 0 O     &trans
 &trans  &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &kp D  &edicion LC(V) V        &kp K  &kp H  &trans &trans &trans    &trans
                     &trans  &trans  &trans        &trans  &trans  &trans
             >;
