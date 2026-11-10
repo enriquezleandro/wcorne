@@ -467,8 +467,8 @@
             bindings = <
 &esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
 &kp LSHFT      &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
-&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp LGUI
-                   &kp LALT  &td_raise_juego  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
+&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp BSPC
+                   &kp LALT  &td_raise_juego  &kp SPACE        &kp RET  &mo LOWER  &kp LGUI
             >;
         };
 
