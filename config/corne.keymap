@@ -438,12 +438,6 @@
         };
 
 
-        td_lshft_caps: td_lshft_caps {
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&kp LSHFT>, <&kp CAPS>;
-        };
         // Raise: mantener = capa Raise; doble toque = prender/apagar modo Juego
         td_raise_juego: td_raise_juego {
             compatible = "zmk,behavior-tap-dance";
@@ -472,7 +466,7 @@
             display-name = "Base";
             bindings = <
 &esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
-&td_lshft_caps  &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
+&kp LSHFT      &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
 &ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp LGUI
                    &kp LALT  &td_raise_juego  &kp SPACE        &kp RET  &mo LOWER  &kp BSPC
             >;
@@ -531,7 +525,7 @@
             display-name = "Extra";
             bindings = <
 &studio_unlock  &none  &kp F1   &kp F2   &kp F3   &kp F4      &none             &none              &none  &none  &none  &none
-&tog COLEMAK    &none  &kp F5   &kp F6   &kp F7   &kp F8      &none             &none              &none  &none  &none  &none
+&tog COLEMAK    &kp CAPS  &kp F5   &kp F6   &kp F7   &kp F8      &none             &none              &none  &none  &none  &none
 &tog JUEGO      &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &none
                                &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
             >;
