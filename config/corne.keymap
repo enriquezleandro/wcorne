@@ -5,7 +5,7 @@
 
 #define BASE     0
 #define COLEMAK  1
-#define JUEGO    2
+#define APPS     2
 #define LOWER    3
 #define RAISE    4
 #define EXTRA    5
@@ -271,7 +271,7 @@
         COMBO(c_brace, &m_brace, 20 21, BASE)   // K + L  ->  {}
         COMBO(c_bracket, &m_bracket, 31 32, BASE)   // M + ,  ->  []
         COMBO(c_cerrar, &kp LA(F4), 1 2, BASE)   // Q + W  ->  Alt+F4 (cerrar ventana)
-        COMBO(c_del, &kp DEL, 25 26, BASE COLEMAK JUEGO)   // Z + X  ->  Del (tambien en modo Juego)
+        COMBO(c_del, &kp DEL, 25 26, BASE COLEMAK APPS)   // Z + X  ->  Del (tambien en modo Apps)
         COMBO(c_eqeq, &m_eqeq, 26 27, BASE)   // X + C  ->  ==
         COMBO(c_lte, &m_lte, 27 28, BASE)   // C + V  ->  <=
         COMBO(c_gte, &m_gte, 28 29, BASE)   // V + B  ->  >=
@@ -438,12 +438,12 @@
         };
 
 
-        // Raise: mantener = capa Raise; doble toque = prender/apagar modo Juego
-        td_raise_juego: td_raise_juego {
+        // Raise: mantener = capa Raise; doble toque = prender/apagar modo Apps
+        td_raise_apps: td_raise_apps {
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
-            bindings = <&mo RAISE>, <&tog JUEGO>;
+            bindings = <&mo RAISE>, <&tog APPS>;
         };
         // @ en Lower: toque = @, mantener = Ctrl (para Ctrl+flechas). Balanced: evita Ctrl accidental al escribir rapido.
         ctrl_arroba: ctrl_arroba {
@@ -468,7 +468,7 @@
 &esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
 &kp LSHFT      &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
 &ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp BSPC
-                   &kp LALT  &td_raise_juego  &kp SPACE        &kp RET  &mo LOWER  &kp LGUI
+                   &kp LALT  &td_raise_apps  &kp SPACE        &kp RET  &mo LOWER  &kp LGUI
             >;
         };
 
@@ -484,10 +484,10 @@
             >;
         };
 
-        // 2: Juego (D5, Lumion, juegos). Letras QWERTY normales, sin funciones al mantener. Solo combo Z+X (Del).
+        // 2: Apps (D5, Lumion, AutoCAD, juegos). Letras QWERTY normales, sin funciones al mantener. Solo combo Z+X (Del).
         // Se prende/apaga con doble toque de Raise, o en Extra (Raise + Lower), abajo a la izquierda.
-        juego_layer {
-            display-name = "Juego";
+        apps_layer {
+            display-name = "Apps";
             bindings = <
 &kp ESC    &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I  &kp O  &kp P     &trans
 &kp LSHFT  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K  &kp L  &kp SEMI  &trans
@@ -520,13 +520,13 @@
             >;
         };
 
-        // 5: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak, modo Juego y pantallas.
+        // 5: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak, modo Apps y pantallas.
         extra_layer {
             display-name = "Extra";
             bindings = <
 &studio_unlock  &none  &kp F1   &kp F2   &kp F3   &kp F4      &none             &none              &none  &none  &none  &none
 &tog COLEMAK    &kp CAPS  &kp F5   &kp F6   &kp F7   &kp F8      &none             &none              &none  &none  &none  &none
-&tog JUEGO      &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &none
+&tog APPS       &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &none
                                &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
             >;
         };
