@@ -501,8 +501,8 @@
             display-name = "Lower";
             bindings = <
 &slash_preg 0 QMARK  &kp FSLH  &kp STAR  &kp AMPS  &kp LBRC  &kp RBRC      &kp LT    &kp CARET  &kp GT     &kp TILDE  &kp GRAVE  &kp DEL
-&excl_abre 0 EXCL  &kp MINUS  &kp PLUS  &kp EQUAL  &kp LPAR  &kp RPAR      &kp DQT   &kp UP     &kp SQT      &kp DLLR   &kp HASH  &kp CAPS
-&ctrl_arroba LCTRL AT  &kp UNDER  &kp BSLH  &kp PIPE  &kp LBKT  &kp RBKT      &kp LEFT  &kp DOWN   &kp RIGHT  &kp PRCNT  &none     &none
+&excl_abre 0 EXCL  &kp MINUS  &kp PLUS  &kp EQUAL  &kp LBKT  &kp RBKT      &kp DQT   &kp UP     &kp SQT      &kp DLLR   &kp HASH  &kp CAPS
+&ctrl_arroba LCTRL AT  &kp UNDER  &kp BSLH  &kp PIPE  &kp LPAR  &kp RPAR      &kp LEFT  &kp DOWN   &kp RIGHT  &kp PRCNT  &none     &none
                         &kp LGUI  &trans  &kp SPACE               &kp RET  &trans  &kp BSPC
             >;
         };
