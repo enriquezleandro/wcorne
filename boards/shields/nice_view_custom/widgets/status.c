@@ -5,6 +5,8 @@
  *
  */
 
+#include <stdio.h>
+#include <string.h>
 #include <zephyr/kernel.h>
 
 #include <zephyr/logging/log.h>
@@ -23,6 +25,10 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
+#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+#include <zmk/hid_indicators.h>
+#include <zmk/events/hid_indicators_changed.h>
+#endif
 
 static sys_slist_t widgets = SYS_SLIST_STATIC_INIT(&widgets);
 
@@ -99,6 +105,28 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     rotate_canvas(canvas, cbuf);
 }
 
+static void draw_pill(lv_obj_t *canvas, int x, int y, int w, int h, const char *text, bool on) {
+    lv_draw_rect_dsc_t pill;
+    lv_draw_rect_dsc_init(&pill);
+    pill.radius = 3;
+    if (on) {
+        pill.bg_color = LVGL_FOREGROUND;
+        pill.bg_opa = LV_OPA_COVER;
+    } else {
+        pill.bg_opa = LV_OPA_TRANSP;
+        pill.border_color = LVGL_FOREGROUND;
+        pill.border_width = 1;
+        pill.border_opa = LV_OPA_COVER;
+    }
+    lv_canvas_draw_rect(canvas, x, y, w, h, &pill);
+
+    lv_draw_label_dsc_t label_dsc;
+    init_label_dsc(&label_dsc, on ? LVGL_BACKGROUND : LVGL_FOREGROUND, &lv_font_unscii_8,
+                   LV_TEXT_ALIGN_CENTER);
+    lv_canvas_draw_text(canvas, x, y + (h - 8) / 2, w, &label_dsc, text);
+}
+
+// Mitad de abajo: perfil activo, estado de la conexion y avisos de Bloq Num / Bloq Mayus
 static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status_state *state) {
     lv_obj_t *canvas = lv_obj_get_child(widget, 1);
 
@@ -106,48 +134,41 @@ static void draw_middle(lv_obj_t *widget, lv_color_t cbuf[], const struct status
     init_rect_dsc(&rect_black_dsc, LVGL_BACKGROUND);
     lv_draw_rect_dsc_t rect_white_dsc;
     init_rect_dsc(&rect_white_dsc, LVGL_FOREGROUND);
-    lv_draw_arc_dsc_t arc_dsc;
-    init_arc_dsc(&arc_dsc, LVGL_FOREGROUND, 2);
-    lv_draw_arc_dsc_t arc_dsc_filled;
-    init_arc_dsc(&arc_dsc_filled, LVGL_FOREGROUND, 9);
-    lv_draw_label_dsc_t label_dsc;
-    init_label_dsc(&label_dsc, LVGL_FOREGROUND, &lv_font_montserrat_18, LV_TEXT_ALIGN_CENTER);
-    lv_draw_label_dsc_t label_dsc_black;
-    init_label_dsc(&label_dsc_black, LVGL_BACKGROUND, &lv_font_montserrat_18, LV_TEXT_ALIGN_CENTER);
+    lv_draw_label_dsc_t label_big;
+    init_label_dsc(&label_big, LVGL_FOREGROUND, &lv_font_montserrat_18, LV_TEXT_ALIGN_CENTER);
+    lv_draw_label_dsc_t label_small;
+    init_label_dsc(&label_small, LVGL_FOREGROUND, &lv_font_montserrat_14, LV_TEXT_ALIGN_CENTER);
 
     // Fill background
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
-    // Draw circles
-    int circle_offsets[NICEVIEW_PROFILE_COUNT][2] = {
-        {13, 13}, {55, 13}, {34, 34}, {13, 55}, {55, 55},
-    };
-
-    for (int i = 0; i < NICEVIEW_PROFILE_COUNT; i++) {
-        bool selected = i == state->active_profile_index;
-
-        if (state->profiles_connected[i]) {
-            lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13, 0, 360,
-                               &arc_dsc);
-        } else if (state->profiles_bonded[i]) {
-            const int segments = 8;
-            const int gap = 20;
-            for (int j = 0; j < segments; ++j)
-                lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 13,
-                                   360. / segments * j + gap / 2.0,
-                                   360. / segments * (j + 1) - gap / 2.0, &arc_dsc);
+    // Perfil activo
+    char profile_text[8] = {};
+    const char *status_text;
+    if (state->selected_endpoint.transport == ZMK_TRANSPORT_USB) {
+        strcpy(profile_text, "USB");
+        status_text = "cable";
+    } else {
+        snprintf(profile_text, sizeof(profile_text), "BT %d", state->active_profile_index + 1);
+        if (state->active_profile_connected) {
+            status_text = "activo";
+        } else if (state->active_profile_bonded) {
+            status_text = "buscando";
+        } else {
+            status_text = "libre";
         }
-
-        if (selected) {
-            lv_canvas_draw_arc(canvas, circle_offsets[i][0], circle_offsets[i][1], 9, 0, 359,
-                               &arc_dsc_filled);
-        }
-
-        char label[2];
-        snprintf(label, sizeof(label), "%d", i + 1);
-        lv_canvas_draw_text(canvas, circle_offsets[i][0] - 8, circle_offsets[i][1] - 10, 16,
-                            (selected ? &label_dsc_black : &label_dsc), label);
     }
+    lv_canvas_draw_text(canvas, 0, 0, CANVAS_SIZE, &label_big, profile_text);
+    lv_canvas_draw_text(canvas, 0, 22, CANVAS_SIZE, &label_small, status_text);
+
+    // Linea separadora
+    lv_canvas_draw_rect(canvas, 6, 43, 56, 1, &rect_white_dsc);
+
+    // Avisos: relleno = activado
+    bool num_on = (state->indicators & 0x01) != 0;
+    bool caps_on = (state->indicators & 0x02) != 0;
+    draw_pill(canvas, 0, 50, 28, 16, "NUM", num_on);
+    draw_pill(canvas, 30, 50, 38, 16, "CAPS", caps_on);
 
     // Rotate canvas
     rotate_canvas(canvas, cbuf);
@@ -257,6 +278,28 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_layer_status, struct layer_status_state, laye
 ZMK_SUBSCRIPTION(widget_layer_status, zmk_layer_state_changed);
 
 
+#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+struct indicators_status_state {
+    uint8_t indicators;
+};
+
+static void indicators_status_update_cb(struct indicators_status_state state) {
+    struct zmk_widget_status *widget;
+    SYS_SLIST_FOR_EACH_CONTAINER(&widgets, widget, node) {
+        widget->state.indicators = state.indicators;
+        draw_middle(widget->obj, widget->cbuf2, &widget->state);
+    }
+}
+
+static struct indicators_status_state indicators_status_get_state(const zmk_event_t *eh) {
+    return (struct indicators_status_state){.indicators = zmk_hid_indicators_get_current_profile()};
+}
+
+ZMK_DISPLAY_WIDGET_LISTENER(widget_indicators_status, struct indicators_status_state,
+                            indicators_status_update_cb, indicators_status_get_state)
+ZMK_SUBSCRIPTION(widget_indicators_status, zmk_hid_indicators_changed);
+#endif
+
 int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget->obj = lv_obj_create(parent);
     lv_obj_set_size(widget->obj, 160, 68);
@@ -274,6 +317,9 @@ int zmk_widget_status_init(struct zmk_widget_status *widget, lv_obj_t *parent) {
     widget_battery_status_init();
     widget_output_status_init();
     widget_layer_status_init();
+#if IS_ENABLED(CONFIG_ZMK_HID_INDICATORS)
+    widget_indicators_status_init();
+#endif
 
     return 0;
 }
