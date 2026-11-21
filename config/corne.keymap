@@ -588,26 +588,26 @@
             >;
         };
 
-        // 6: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
+        // 6: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: VS Code (arriba: sel. linea, duplicar, definicion, renombrar, buscar archivo, paleta).
         // VS Code: medio der. Ctrl+Shift+K borrar linea; fila de abajo: Alt+flechas mover linea, Ctrl+Shift+L sel. coincidencias,
         //          Shift+Alt+I cursores, Alt+Shift+F formatear, Ctrl+F5 ejecutar.
         raise_layer {
             display-name = "Raise";
             bindings = <
-&kp DEL          &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp C_PLAY_PAUSE  &kp C_PREV      &kp C_NEXT       &kp C_MUTE     &kp C_VOL_DN    &kp C_VOL_UP
+&kp DEL          &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp LC(L)         &kp LS(LA(DOWN)) &kp F12         &kp F2         &kp LC(P)       &kp LC(LS(P))
 &kp RET          &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &kp LG(LEFT)      &kp LG(RIGHT)   &kp LC(B)        &kp LC(GRAVE)  &kp LC(LA(B))   &kp LC(LS(K))
 &kp SQT          &kp DQT    &kp DOT   &kp N1  &kp N2  &kp N3        &kp LA(UP)        &kp LA(DOWN)    &kp LC(LS(L))    &kp LA(LS(I))  &kp LC(FSLH)    &kp LC(F5)
                          &kp BSPC  &trans  &kp N0           &kp RET  &trans  &kp TAB
             >;
         };
 
-        // 7: Extra (Raise + Lower). F1-F12, QWERTY/Colemak, modo Apps y pantallas.
+        // 7: Extra (Raise + Lower). F1-F12, multimedia arriba, Bluetooth abajo, QWERTY/Colemak, modo Apps y pantallas.
         extra_layer {
             display-name = "Extra";
             bindings = <
-&none           &none  &kp F1   &kp F2   &kp F3   &kp F4      &bt BT_PRV        &bt BT_NXT         &none  &none  &none  &bt BT_CLR
+&none           &none  &kp F1   &kp F2   &kp F3   &kp F4      &kp C_PLAY_PAUSE  &kp C_PREV         &kp C_NEXT  &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP
 &tog COLEMAK    &kp CAPS  &kp F5   &kp F6   &kp F7   &kp F8      &m_desk_izq       &m_desk_der         &kp LG(LS(LEFT))  &kp LG(LS(RIGHT))  &kp LG(V)  &none
-&none           &tog MOUSE  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &kp LG(L)
+&none           &tog MOUSE  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &bt BT_PRV  &bt BT_NXT  &bt BT_CLR  &kp LG(L)
                                &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
             >;
         };
