@@ -1,0 +1,595 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+
+#define BASE     0
+#define COLEMAK  1
+#define APPS     2
+#define MOUSE    3
+#define LOWER    4
+#define RAISE    5
+#define EXTRA    6
+
+// Combos: dos teclas juntas, solo en la capa base indicada. Posiciones:
+//  0  1  2  3  4  5     6  7  8  9 10 11
+// 12 13 14 15 16 17    18 19 20 21 22 23
+// 24 25 26 27 28 29    30 31 32 33 34 35
+//          36 37 38    39 40 41
+#define COMBO(NAME, BINDING, KEYS, LAYER) \
+    NAME { \
+        timeout-ms = <35>; \
+        key-positions = <KEYS>; \
+        layers = <LAYER>; \
+        bindings = <BINDING>; \
+    };
+
+/ {
+    macros {
+        m_paren: m_paren {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LPAR &kp RPAR &kp LEFT>;
+        };
+        m_brace: m_brace {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LBRC &kp RBRC &kp LEFT>;
+        };
+        m_bracket: m_bracket {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LBKT &kp RBKT &kp LEFT>;
+        };
+        m_eqeq: m_eqeq {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp EQUAL &kp EQUAL>;
+        };
+        m_lte: m_lte {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp LT &kp EQUAL>;
+        };
+        m_gte: m_gte {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp GT &kp EQUAL>;
+        };
+        m_neq: m_neq {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp EXCL &kp EQUAL>;
+        };
+        m_pluseq: m_pluseq {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp PLUS &kp EQUAL>;
+        };
+        m_minuseq: m_minuseq {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp MINUS &kp EQUAL>;
+        };
+        m_dslash: m_dslash {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp FSLH &kp FSLH>;
+        };
+        m_dstar: m_dstar {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&macro_tap &kp STAR &kp STAR>;
+        };
+        // Toca una sola vez la combinacion que recibe (para que mantener no la repita)
+        tocar_una_vez: tocar_una_vez {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            bindings
+                = <&macro_param_1to1>
+                , <&macro_tap &kp MACRO_PLACEHOLDER>
+                ;
+        };
+        // Handy traducir: mantiene Ctrl+Shift+Espacio mientras se mantiene la Q.
+        // Al apretar: Ctrl, Shift, Espacio. Al soltar: primero Espacio y despues los modificadores.
+        m_traducir: m_traducir {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <20>;
+            tap-ms = <20>;
+            bindings
+                = <&macro_press &kp LCTRL>
+                , <&macro_press &kp LSHFT>
+                , <&macro_press &kp SPACE>
+                , <&macro_pause_for_release>
+                , <&macro_release &kp SPACE>
+                , <&macro_release &kp LSHFT>
+                , <&macro_release &kp LCTRL>
+                ;
+        };
+        // n con tilde por codigo Alt de Windows (requiere Bloq Num activado): Alt+0241 = n, Alt+0209 = N mayuscula
+        // Escritorio virtual: Win y Ctrl se aprietan primero y la flecha despues, como a mano
+        // Minimizar la ventana activa: Alt+Espacio (menu de la ventana) y despues N
+        m_minimizar: m_minimizar {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp SPACE>
+                , <&macro_release &kp LALT>
+                , <&macro_wait_time 150>
+                , <&macro_tap &kp N>
+                ;
+        };
+        m_desk_izq: m_desk_izq {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings
+                = <&macro_press &kp LGUI &kp LCTRL>
+                , <&macro_tap &kp LEFT>
+                , <&macro_release &kp LCTRL &kp LGUI>
+                ;
+        };
+        m_desk_der: m_desk_der {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings
+                = <&macro_press &kp LGUI &kp LCTRL>
+                , <&macro_tap &kp RIGHT>
+                , <&macro_release &kp LCTRL &kp LGUI>
+                ;
+        };
+        m_enie: m_enie {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N4 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_enie_may: m_enie_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N0 &kp KP_N9>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        // Signos de apertura por codigo Alt: Alt+0191 = signo de pregunta invertido, Alt+0161 = exclamacion invertida
+        m_abre_preg: m_abre_preg {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N1 &kp KP_N9 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_abre_excl: m_abre_excl {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N1 &kp KP_N6 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        // Vocales con tilde por codigo Alt (minuscula / mayuscula). Requiere Bloq Num activado.
+        m_aa: m_aa {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N2 &kp KP_N5>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_aa_may: m_aa_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N1 &kp KP_N9 &kp KP_N3>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_ee: m_ee {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N3 &kp KP_N3>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_ee_may: m_ee_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N0 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_ii: m_ii {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N3 &kp KP_N7>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_ii_may: m_ii_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N0 &kp KP_N5>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_oo: m_oo {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N4 &kp KP_N3>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_oo_may: m_oo_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N1 &kp KP_N1>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_uu: m_uu {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N5 &kp KP_N0>
+                , <&macro_release &kp LALT>
+                ;
+        };
+        m_uu_may: m_uu_may {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <10>;
+            tap-ms = <10>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp KP_N0 &kp KP_N2 &kp KP_N1 &kp KP_N8>
+                , <&macro_release &kp LALT>
+                ;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+        COMBO(c_paren, &m_paren, 19 20, BASE)   // J + K  ->  ()
+        COMBO(c_brace, &m_brace, 20 21, BASE)   // K + L  ->  {}
+        COMBO(c_bracket, &m_bracket, 31 32, BASE)   // M + ,  ->  []
+        COMBO(c_cerrar, &kp LA(F4), 1 2, BASE)   // Q + W  ->  Alt+F4 (cerrar ventana)
+        COMBO(c_minimizar, &m_minimizar, 1 3, BASE)   // Q + E  ->  minimizar ventana (Alt+Espacio, N)
+        COMBO(c_del, &kp DEL, 25 26, BASE COLEMAK APPS)   // Z + X  ->  Del (tambien en modo Apps)
+        COMBO(c_eqeq, &m_eqeq, 26 27, BASE)   // X + C  ->  ==
+        COMBO(c_lte, &m_lte, 27 28, BASE)   // C + V  ->  <=
+        COMBO(c_gte, &m_gte, 28 29, BASE)   // V + B  ->  >=
+        COMBO(c_neq, &m_neq, 14 15, BASE)   // S + D  ->  !=
+        COMBO(c_pluseq, &m_pluseq, 15 16, BASE)   // D + F  ->  +=
+        COMBO(c_minuseq, &m_minuseq, 16 17, BASE)   // F + G  ->  -=
+        COMBO(c_dslash, &m_dslash, 32 33, BASE)   // , + .  ->  //
+        COMBO(c_dstar, &m_dstar, 30 31, BASE)   // N + M  ->  **
+        // Colemak-DH: las posiciones que en Colemak caen sobre pares comunes se movieron.
+        COMBO(k_neq,     &m_neq,     1 2,   COLEMAK)   // Q + W  ->  !=
+        COMBO(k_pluseq,  &m_pluseq,  2 3,   COLEMAK)   // W + F  ->  +=
+        COMBO(k_paren,   &m_paren,   3 4,   COLEMAK)   // F + P  ->  ()
+        COMBO(k_brace,   &m_brace,   4 5,   COLEMAK)   // P + B  ->  {}
+        COMBO(k_minuseq, &m_minuseq, 16 17, COLEMAK)   // T + G  ->  -=
+        COMBO(k_eqeq,    &m_eqeq,    26 27, COLEMAK)   // X + C  ->  ==
+        COMBO(k_lte,     &m_lte,     27 28, COLEMAK)   // C + D  ->  <=
+        COMBO(k_gte,     &m_gte,     28 29, COLEMAK)   // D + V  ->  >=
+        COMBO(k_dstar,   &m_dstar,   30 31, COLEMAK)   // K + H  ->  **
+        COMBO(k_bracket, &m_bracket, 31 32, COLEMAK)   // H + ,  ->  []
+        COMBO(k_dslash,  &m_dslash,  32 33, COLEMAK)   // , + .  ->  //
+    };
+
+    behaviors {
+        // Esc: toque = Esc, mantener = transcribir con Handy (Ctrl+Space)
+        esc_dictar: esc_dictar {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <250>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        // Z X C V R F N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E, en la F) / nueva carpeta (Ctrl+Shift+N)
+        edicion: edicion {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&tocar_una_vez>, <&kp>;
+        };
+
+        // Ctrl: sola = Ctrl normal; con Alt mantenido = Tab (Alt+Tab con la mano izquierda)
+        ctrl_alttab: ctrl_alttab {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp LCTRL>, <&kp TAB>;
+            mods = <(MOD_LALT|MOD_RALT)>;
+            keep-mods = <(MOD_LALT|MOD_RALT)>;
+        };
+
+
+        // Q: toque = q, mantener = transcribir y traducir con Handy (Ctrl+Shift+Space)
+        q_traducir: q_traducir {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&m_traducir>, <&kp>;
+        };
+
+        // ; : toque = punto y coma, mantener = n con tilde (con Shift, mayuscula). Solo Windows.
+        enie_mm: enie_mm {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_enie>, <&m_enie_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        semi_enie: semi_enie {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&enie_mm>, <&kp>;
+        };
+
+        // / : toque = barra (con Shift, ?), mantener = signo de pregunta de apertura (con o sin Shift). Solo Windows.
+        preg_mm: preg_mm {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_abre_preg>, <&m_abre_preg>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        slash_preg: slash_preg {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&preg_mm>, <&kp>;
+        };
+        // ! en Lower: toque = !, mantener = exclamacion de apertura. Solo Windows.
+        excl_abre: excl_abre {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&m_abre_excl>, <&kp>;
+        };
+
+        // Vocales: toque = vocal, mantener = vocal con tilde (con Shift, mayuscula). Solo Windows.
+        mm_a: mm_a {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_aa>, <&m_aa_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_a: tilde_a {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_a>, <&kp>;
+        };
+        mm_e: mm_e {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_ee>, <&m_ee_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_e: tilde_e {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_e>, <&kp>;
+        };
+        mm_i: mm_i {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_ii>, <&m_ii_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_i: tilde_i {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_i>, <&kp>;
+        };
+        mm_o: mm_o {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_oo>, <&m_oo_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_o: tilde_o {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_o>, <&kp>;
+        };
+        mm_u: mm_u {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&m_uu>, <&m_uu_may>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+        tilde_u: tilde_u {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            bindings = <&mm_u>, <&kp>;
+        };
+
+
+        // Raise: mantener = capa Raise; doble toque = prender/apagar modo Apps
+        td_raise_apps: td_raise_apps {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&mo RAISE>, <&tog APPS>;
+        };
+        // @ en Lower: toque = @, mantener = Ctrl (para Ctrl+flechas). Balanced: evita Ctrl accidental al escribir rapido.
+        ctrl_arroba: ctrl_arroba {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&kp>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        // 0: Base. Shift normal (Bloq Mayus en Lower y en Extra).
+        // Abajo izq: Ctrl; con Alt mantenido = Tab (Alt+Tab).
+        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), F Explorador (Win+E), vocales con tilde (A E I O U), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
+        // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
+        base_layer {
+            display-name = "Base";
+            bindings = <
+&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
+&kp LSHFT      &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
+&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 SQT  &kp BSPC
+                   &kp LALT  &td_raise_apps  &kp SPACE        &kp RET  &mo LOWER  &kp LGUI
+            >;
+        };
+
+        // 1: Colemak-DH. Solo cambian las letras; el resto viene de la base.
+        // Se prende/apaga en Extra (Raise + Lower), tecla izquierda de la fila del medio.
+        colemak_layer {
+            display-name = "Colemak";
+            bindings = <
+&trans  &q_traducir 0 Q  &kp W  &edicion LG(E) F  &kp P  &kp B        &kp J  &kp L  &tilde_u 0 U  &kp Y  &semi_enie 0 SEMI  &trans
+&trans  &tilde_a 0 A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &edicion LC(LS(N)) N  &tilde_e 0 E  &tilde_i 0 I  &tilde_o 0 O     &trans
+&trans  &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &kp D  &edicion LC(V) V        &kp K  &kp H  &trans &trans &trans    &trans
+                    &trans  &trans  &trans        &trans  &trans  &trans
+            >;
+        };
+
+        // 2: Apps (D5, Lumion, AutoCAD, juegos). Letras QWERTY normales, sin funciones al mantener. Solo combo Z+X (Del).
+        // Se prende/apaga con doble toque de Raise, o en Extra (Raise + Lower), abajo a la izquierda.
+        apps_layer {
+            display-name = "Apps";
+            bindings = <
+&kp ESC    &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I  &kp O  &kp P     &trans
+&kp LSHFT  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K  &kp L  &kp SEMI  &trans
+&ctrl_alttab &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &trans
+                    &trans  &trans  &trans        &trans  &trans  &trans
+            >;
+        };
+
+        // 3: Mouse. Cursor con las teclas. Se prende/apaga en Extra (abajo a la izquierda, al lado de Apps).
+        // Derecha: mover en H J K L (como Lower y Vim), scroll en U (abajo) e I (arriba). Izquierda: F clic, D clic derecho, S clic del medio.
+        mouse_layer {
+            display-name = "Mouse";
+            bindings = <
+&trans  &none  &none        &none        &none        &none        &none             &msc SCRL_DOWN   &msc SCRL_UP      &none           &none  &trans
+&trans  &none  &mkp MCLK    &mkp RCLK    &mkp LCLK    &none        &mmv MOVE_LEFT    &mmv MOVE_DOWN   &mmv MOVE_UP      &mmv MOVE_RIGHT &none  &trans
+&trans  &none  &none        &none        &none        &none        &none             &none            &none             &none           &none  &trans
+                    &trans  &trans  &trans        &trans  &trans  &trans
+            >;
+        };
+
+        // 4: Lower (pulgar derecho). Izquierda: simbolos de programacion. Derecha: navegacion.
+        lower_layer {
+            display-name = "Lower";
+            bindings = <
+&slash_preg 0 QMARK  &kp FSLH  &kp STAR  &kp AMPS  &kp LBRC  &kp RBRC      &kp LT    &kp CARET  &kp GT     &kp TILDE  &kp GRAVE  &kp DEL
+&excl_abre 0 EXCL  &kp MINUS  &kp PLUS  &kp EQUAL  &kp LBKT  &kp RBKT      &kp LEFT  &kp DOWN   &kp UP       &kp RIGHT  &kp HASH  &kp CAPS
+&ctrl_arroba LCTRL AT  &kp UNDER  &kp BSLH  &kp PIPE  &kp LPAR  &kp RPAR      &kp DQT   &kp SQT    &kp DLLR   &kp PRCNT  &kp COLON  &none
+                        &kp LGUI  &trans  &kp SPACE               &kp RET  &trans  &kp BSPC
+            >;
+        };
+
+        // 5: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
+        // VS Code (fila de abajo): Ctrl+L sel. linea, Ctrl+Shift+K borrar linea, Ctrl+Shift+L sel. coincidencias,
+        //          Shift+Alt+I cursores, Alt+Shift+F formatear, Ctrl+F5 ejecutar.
+        raise_layer {
+            display-name = "Raise";
+            bindings = <
+&kp DEL          &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp C_PLAY_PAUSE  &kp C_PREV      &kp C_NEXT       &kp C_MUTE     &kp C_VOL_DN    &kp C_VOL_UP
+&kp RET          &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &bt BT_PRV        &bt BT_NXT      &kp LC(B)        &kp LC(GRAVE)  &kp LC(LA(B))   &bt BT_CLR
+&kp SQT          &kp DQT    &kp DOT   &kp N1  &kp N2  &kp N3        &kp LC(L)         &kp LC(LS(K))   &kp LC(LS(L))    &kp LA(LS(I))  &kp LA(LS(F))   &kp LC(F5)
+                         &kp BSPC  &trans  &kp N0           &kp RET  &trans  &kp RALT
+            >;
+        };
+
+        // 6: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak, modo Apps y pantallas.
+        extra_layer {
+            display-name = "Extra";
+            bindings = <
+&studio_unlock  &none  &kp F1   &kp F2   &kp F3   &kp F4      &none             &none              &none  &none  &none  &none
+&tog COLEMAK    &kp CAPS  &kp F5   &kp F6   &kp F7   &kp F8      &m_desk_izq       &m_desk_der         &none  &none  &none  &none
+&tog APPS       &tog MOUSE  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &none
+                               &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
+            >;
+        };
+    };
+
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        extra_layer {
+            if-layers = <LOWER RAISE>;
+            then-layer = <EXTRA>;
+        };
+    };
+};

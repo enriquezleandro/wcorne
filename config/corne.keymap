@@ -2,13 +2,17 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <input/processors.dtsi>
 
 #define BASE     0
 #define COLEMAK  1
 #define APPS     2
-#define LOWER    3
-#define RAISE    4
-#define EXTRA    5
+#define MOUSE    3
+#define PRECISO  4
+#define LOWER    5
+#define RAISE    6
+#define EXTRA    7
 
 // Combos: dos teclas juntas, solo en la capa base indicada. Posiciones:
 //  0  1  2  3  4  5     6  7  8  9 10 11
@@ -89,7 +93,7 @@
                 , <&macro_tap &kp MACRO_PLACEHOLDER>
                 ;
         };
-        // Handy traducir: mantiene Ctrl+Shift+Espacio mientras se mantiene la Q.
+        // Handy traducir: mantiene Ctrl+Shift+Espacio mientras se mantiene la tecla de arriba a la derecha (Del).
         // Al apretar: Ctrl, Shift, Espacio. Al soltar: primero Espacio y despues los modificadores.
         m_traducir: m_traducir {
             compatible = "zmk,behavior-macro";
@@ -108,6 +112,20 @@
         };
         // n con tilde por codigo Alt de Windows (requiere Bloq Num activado): Alt+0241 = n, Alt+0209 = N mayuscula
         // Escritorio virtual: Win y Ctrl se aprietan primero y la flecha despues, como a mano
+        // Minimizar la ventana activa: Alt+Espacio (menu de la ventana) y despues N
+        m_minimizar: m_minimizar {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings
+                = <&macro_press &kp LALT>
+                , <&macro_tap &kp SPACE>
+                , <&macro_release &kp LALT>
+                , <&macro_wait_time 150>
+                , <&macro_tap &kp N>
+                ;
+        };
         m_desk_izq: m_desk_izq {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -293,7 +311,8 @@
         COMBO(c_paren, &m_paren, 19 20, BASE)   // J + K  ->  ()
         COMBO(c_brace, &m_brace, 20 21, BASE)   // K + L  ->  {}
         COMBO(c_bracket, &m_bracket, 31 32, BASE)   // M + ,  ->  []
-        COMBO(c_cerrar, &kp LA(F4), 1 2, BASE)   // Q + W  ->  Alt+F4 (cerrar ventana)
+        COMBO(c_cerrar, &kp LA(F4), 1 2, BASE COLEMAK)   // Q + W  ->  Alt+F4 (cerrar ventana), tambien en Colemak
+        COMBO(c_minimizar, &m_minimizar, 1 3, BASE COLEMAK)   // Q + E (en Colemak, Q + F)  ->  minimizar ventana (Alt+Espacio, N)
         COMBO(c_del, &kp DEL, 25 26, BASE COLEMAK APPS)   // Z + X  ->  Del (tambien en modo Apps)
         COMBO(c_eqeq, &m_eqeq, 26 27, BASE)   // X + C  ->  ==
         COMBO(c_lte, &m_lte, 27 28, BASE)   // C + V  ->  <=
@@ -304,7 +323,7 @@
         COMBO(c_dslash, &m_dslash, 32 33, BASE)   // , + .  ->  //
         COMBO(c_dstar, &m_dstar, 30 31, BASE)   // N + M  ->  **
         // Colemak-DH: las posiciones que en Colemak caen sobre pares comunes se movieron.
-        COMBO(k_neq,     &m_neq,     1 2,   COLEMAK)   // Q + W  ->  !=
+        COMBO(k_neq,     &m_neq,     6 7,   COLEMAK)   // J + L  ->  !=
         COMBO(k_pluseq,  &m_pluseq,  2 3,   COLEMAK)   // W + F  ->  +=
         COMBO(k_paren,   &m_paren,   3 4,   COLEMAK)   // F + P  ->  ()
         COMBO(k_brace,   &m_brace,   4 5,   COLEMAK)   // P + B  ->  {}
@@ -333,6 +352,7 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <300>;
+            require-prior-idle-ms = <150>;
             bindings = <&tocar_una_vez>, <&kp>;
         };
 
@@ -346,12 +366,12 @@
         };
 
 
-        // Q: toque = q, mantener = transcribir y traducir con Handy (Ctrl+Shift+Space)
-        q_traducir: q_traducir {
+        // Arriba der.: toque = Del, mantener = transcribir y traducir con Handy (Ctrl+Shift+Space)
+        esc_traducir: esc_traducir {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";
-            tapping-term-ms = <300>;
+            tapping-term-ms = <250>;
             bindings = <&m_traducir>, <&kp>;
         };
 
@@ -367,7 +387,16 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <300>;
-            bindings = <&enie_mm>, <&kp>;
+            require-prior-idle-ms = <150>;
+            bindings = <&enie_mm>, <&colon_mm>;
+        };
+
+        // Toque de la tecla de la n: dos puntos; con Shift, punto y coma (Shift se descarta).
+        colon_mm: colon_mm {
+            compatible = "zmk,behavior-mod-morph";
+            #binding-cells = <0>;
+            bindings = <&kp COLON>, <&kp SEMI>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
         };
 
         // / : toque = barra (con Shift, ?), mantener = signo de pregunta de apertura (con o sin Shift). Solo Windows.
@@ -382,6 +411,7 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <300>;
+            require-prior-idle-ms = <150>;
             bindings = <&preg_mm>, <&kp>;
         };
         // ! en Lower: toque = !, mantener = exclamacion de apertura. Solo Windows.
@@ -405,6 +435,7 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <300>;
+            require-prior-idle-ms = <150>;
             bindings = <&mm_a>, <&kp>;
         };
         mm_e: mm_e {
@@ -418,6 +449,7 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <300>;
+            require-prior-idle-ms = <150>;
             bindings = <&mm_e>, <&kp>;
         };
         mm_i: mm_i {
@@ -431,6 +463,7 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <300>;
+            require-prior-idle-ms = <150>;
             bindings = <&mm_i>, <&kp>;
         };
         mm_o: mm_o {
@@ -444,6 +477,7 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <300>;
+            require-prior-idle-ms = <150>;
             bindings = <&mm_o>, <&kp>;
         };
         mm_u: mm_u {
@@ -457,6 +491,7 @@
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <300>;
+            require-prior-idle-ms = <150>;
             bindings = <&mm_u>, <&kp>;
         };
 
@@ -481,16 +516,16 @@
     keymap {
         compatible = "zmk,keymap";
 
-        // 0: Base. Shift: mantener = Shift, doble toque = Bloq Mayus.
+        // 0: Base. Shift normal (Bloq Mayus en Lower y en Extra).
         // Abajo izq: Ctrl; con Alt mantenido = Tab (Alt+Tab).
-        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), F Explorador (Win+E), vocales con tilde (A E I O U), N nueva carpeta (Ctrl+Shift+N), ; enie (Alt+0241), / apertura de pregunta (Alt+0191); en Lower, ! apertura de exclamacion (Alt+0161).
-        // Arriba izq: toque = Esc, mantener = transcribir (Handy). Q mantenida = traducir.
+        // Mantenidas: Z descomprimir (Ctrl+Shift+E), X cortar, C copiar, V pegar, R renombrar (F2), F Explorador (Win+E), vocales con tilde (A E I O U), N nueva carpeta (Ctrl+Shift+N), : dos puntos (con Shift, ;) y mantenida enie (Alt+0241); en Lower, ? mantenido = apertura de pregunta (Alt+0191) y ! apertura de exclamacion (Alt+0161).
+        // Arriba izq: toque = Esc, mantener = transcribir (Handy). Arriba der.: toque = Del, mantener = traducir (Handy).
         base_layer {
             display-name = "Base";
             bindings = <
-&esc_dictar LC(SPACE) ESC  &q_traducir 0 Q  &kp W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &kp DEL
-&kp LSHFT      &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 SEMI  &kp TAB
-&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &slash_preg 0 FSLH  &kp BSPC
+&esc_dictar LC(SPACE) ESC  &kp Q  &kp W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &esc_traducir 0 DEL
+&kp LSHFT      &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 0  &kp TAB
+&ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &kp SQT  &kp BSPC
                    &kp LALT  &td_raise_apps  &kp SPACE        &kp RET  &mo LOWER  &kp LGUI
             >;
         };
@@ -500,7 +535,7 @@
         colemak_layer {
             display-name = "Colemak";
             bindings = <
-&trans  &q_traducir 0 Q  &kp W  &edicion LG(E) F  &kp P  &kp B        &kp J  &kp L  &tilde_u 0 U  &kp Y  &semi_enie 0 SEMI  &trans
+&trans  &kp Q  &kp W  &edicion LG(E) F  &kp P  &kp B        &kp J  &kp L  &tilde_u 0 U  &kp Y  &semi_enie 0 0  &trans
 &trans  &tilde_a 0 A  &edicion F2 R  &kp S  &kp T  &kp G        &kp M  &edicion LC(LS(N)) N  &tilde_e 0 E  &tilde_i 0 I  &tilde_o 0 O     &trans
 &trans  &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &kp D  &edicion LC(V) V        &kp K  &kp H  &trans &trans &trans    &trans
                     &trans  &trans  &trans        &trans  &trans  &trans
@@ -508,48 +543,71 @@
         };
 
         // 2: Apps (D5, Lumion, AutoCAD, juegos). Letras QWERTY normales, sin funciones al mantener. Solo combo Z+X (Del).
-        // Se prende/apaga con doble toque de Raise, o en Extra (Raise + Lower), abajo a la izquierda.
+        // Se prende/apaga con doble toque de Raise.
         apps_layer {
             display-name = "Apps";
             bindings = <
-&kp ESC    &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I  &kp O  &kp P     &trans
+&kp ESC    &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I  &kp O  &kp P     &kp DEL
 &kp LSHFT  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K  &kp L  &kp SEMI  &trans
 &ctrl_alttab &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &trans
                     &trans  &trans  &trans        &trans  &trans  &trans
             >;
         };
 
-        // 3: Lower (pulgar derecho). Izquierda: simbolos de programacion. Derecha: navegacion.
-        lower_layer {
-            display-name = "Lower";
+        // 3: Mouse. Cursor con las teclas. Se prende/apaga en Extra (abajo a la izquierda, al lado de Apps).
+        // Derecha: mover en H J K L (como Lower y Vim), scroll en U (abajo) e I (arriba). Izquierda: F clic, D clic derecho, S clic del medio.
+        mouse_layer {
+            display-name = "Mouse";
             bindings = <
-&slash_preg 0 QMARK  &kp FSLH  &kp STAR  &kp AMPS  &kp LBRC  &kp RBRC      &kp LT    &kp CARET  &kp GT     &kp TILDE  &kp GRAVE  &kp DEL
-&excl_abre 0 EXCL  &kp MINUS  &kp PLUS  &kp EQUAL  &kp LBKT  &kp RBKT      &kp DQT   &kp UP     &kp SQT      &kp DLLR   &kp HASH  &kp CAPS
-&ctrl_arroba LCTRL AT  &kp UNDER  &kp BSLH  &kp PIPE  &kp LPAR  &kp RPAR      &kp LEFT  &kp DOWN   &kp RIGHT  &kp PRCNT  &none     &none
-                        &kp LGUI  &trans  &kp SPACE               &kp RET  &trans  &kp BSPC
+&trans  &none  &none        &none        &none        &none        &none             &msc SCRL_DOWN   &msc SCRL_UP      &none           &none  &trans
+&trans  &mo PRECISO  &mkp MCLK    &mkp RCLK    &mkp LCLK    &none        &mmv MOVE_LEFT    &mmv MOVE_DOWN   &mmv MOVE_UP      &mmv MOVE_RIGHT &none  &trans
+&trans  &none  &none        &mkp MB4     &mkp MB5     &none        &none             &none            &none             &none           &none  &trans
+                    &trans  &trans  &trans        &trans  &trans  &trans
             >;
         };
 
-        // 4: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
-        // VS Code (fila de abajo): Ctrl+L sel. linea, Ctrl+Shift+K borrar linea, Ctrl+Shift+L sel. coincidencias,
+        // 4: Preciso. Mantener A en la capa Mouse: el cursor va a 1/4 de velocidad.
+        preciso_layer {
+            display-name = "Preciso";
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans        &trans  &trans  &trans  &trans  &trans  &trans
+                    &trans  &trans  &trans        &trans  &trans  &trans
+            >;
+        };
+
+        // 5: Lower (pulgar derecho). Izquierda: simbolos de programacion. Derecha: navegacion.
+        lower_layer {
+            display-name = "Lower";
+            bindings = <
+&slash_preg 0 QMARK  &kp BSLH  &kp STAR  &kp AMPS  &kp LBRC  &kp RBRC      &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp LT     &kp DEL
+&excl_abre 0 EXCL  &kp PIPE   &kp PLUS  &kp EQUAL  &kp LBKT  &kp RBKT      &kp LEFT  &kp DOWN   &kp UP       &kp RIGHT  &kp CARET &caps_word
+&ctrl_arroba LCTRL AT  &kp FSLH   &kp MINUS &kp UNDER  &kp LPAR  &kp RPAR      &kp GRAVE &kp TILDE    &kp DLLR   &kp PRCNT  &kp GT     &kp HASH
+                        &kp LSHFT &trans  &kp SPACE               &kp RET  &trans  &kp BSPC
+            >;
+        };
+
+        // 6: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: multimedia, Bluetooth y VS Code.
+        // VS Code: medio der. Ctrl+Shift+K borrar linea; fila de abajo: Alt+flechas mover linea, Ctrl+Shift+L sel. coincidencias,
         //          Shift+Alt+I cursores, Alt+Shift+F formatear, Ctrl+F5 ejecutar.
         raise_layer {
             display-name = "Raise";
             bindings = <
 &kp DEL          &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp C_PLAY_PAUSE  &kp C_PREV      &kp C_NEXT       &kp C_MUTE     &kp C_VOL_DN    &kp C_VOL_UP
-&kp RET          &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &bt BT_PRV        &bt BT_NXT      &kp LC(B)        &kp LC(GRAVE)  &kp LC(LA(B))   &bt BT_CLR
-&kp SQT          &kp DQT    &kp DOT   &kp N1  &kp N2  &kp N3        &kp LC(L)         &kp LC(LS(K))   &kp LC(LS(L))    &kp LA(LS(I))  &kp LA(LS(F))   &kp LC(F5)
-                         &kp BSPC  &trans  &kp N0           &kp RET  &trans  &kp RALT
+&kp RET          &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &kp LG(LEFT)      &kp LG(RIGHT)   &kp LC(B)        &kp LC(GRAVE)  &kp LC(LA(B))   &kp LC(LS(K))
+&kp SQT          &kp DQT    &kp DOT   &kp N1  &kp N2  &kp N3        &kp LA(UP)        &kp LA(DOWN)    &kp LC(LS(L))    &kp LA(LS(I))  &kp LC(FSLH)    &kp LC(F5)
+                         &kp BSPC  &trans  &kp N0           &kp RET  &trans  &kp TAB
             >;
         };
 
-        // 5: Extra (Raise + Lower). F1-F12, Studio, QWERTY/Colemak, modo Apps y pantallas.
+        // 7: Extra (Raise + Lower). F1-F12, QWERTY/Colemak, modo Apps y pantallas.
         extra_layer {
             display-name = "Extra";
             bindings = <
-&studio_unlock  &none  &kp F1   &kp F2   &kp F3   &kp F4      &none             &none              &none  &none  &none  &none
-&tog COLEMAK    &kp CAPS  &kp F5   &kp F6   &kp F7   &kp F8      &m_desk_izq       &m_desk_der         &none  &none  &none  &none
-&tog APPS       &none  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &none
+&none           &none  &kp F1   &kp F2   &kp F3   &kp F4      &bt BT_PRV        &bt BT_NXT         &none  &none  &none  &bt BT_CLR
+&tog COLEMAK    &kp CAPS  &kp F5   &kp F6   &kp F7   &kp F8      &m_desk_izq       &m_desk_der         &kp LG(LS(LEFT))  &kp LG(LS(RIGHT))  &kp LG(V)  &none
+&none           &tog MOUSE  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &none  &none  &none  &kp LG(L)
                                &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
             >;
         };
@@ -562,5 +620,13 @@
             if-layers = <LOWER RAISE>;
             then-layer = <EXTRA>;
         };
+    };
+};
+
+// Capa Preciso: el cursor del mouse va a 1/4 de velocidad
+&mmv_input_listener {
+    preciso {
+        layers = <PRECISO>;
+        input-processors = <&zip_xy_scaler 1 4>;
     };
 };
