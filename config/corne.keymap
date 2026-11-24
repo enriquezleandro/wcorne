@@ -346,6 +346,15 @@
             bindings = <&kp>, <&kp>;
         };
 
+        // Raise: toque = ' (pies), mantener = " (pulgadas)
+        pies_pulg: pies_pulg {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <250>;
+            bindings = <&kp>, <&kp>;
+        };
+
         // Z X C V R F N: toque = letra, mantener = descomprimir (Ctrl+Shift+E) / cortar / copiar / pegar / renombrar (F2) / Explorador (Win+E, en la F) / nueva carpeta (Ctrl+Shift+N)
         edicion: edicion {
             compatible = "zmk,behavior-hold-tap";
@@ -503,7 +512,7 @@
             tapping-term-ms = <200>;
             bindings = <&mo RAISE>, <&tog APPS>;
         };
-        // @ en Lower: toque = @, mantener = Ctrl (para Ctrl+flechas). Balanced: evita Ctrl accidental al escribir rapido.
+        // (sin uso) toque = simbolo, mantener = Ctrl. Lower ahora tiene Ctrl directo abajo a la izquierda (para Ctrl+flechas). Balanced: evita Ctrl accidental al escribir rapido.
         ctrl_arroba: ctrl_arroba {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
@@ -548,8 +557,8 @@
             display-name = "Apps";
             bindings = <
 &kp ESC    &kp Q  &kp W  &kp E  &kp R  &kp T        &kp Y  &kp U  &kp I  &kp O  &kp P     &kp DEL
-&kp LSHFT  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K  &kp L  &kp SEMI  &trans
-&ctrl_alttab &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH  &trans
+&kp LSHFT  &kp A  &kp S  &kp D  &kp F  &kp G        &kp H  &kp J  &kp K  &kp L  &colon_mm  &trans
+&ctrl_alttab &kp Z  &kp X  &kp C  &kp V  &kp B        &kp N  &kp M  &kp COMMA  &kp DOT  &kp SQT   &trans
                     &trans  &trans  &trans        &trans  &trans  &trans
             >;
         };
@@ -581,23 +590,23 @@
         lower_layer {
             display-name = "Lower";
             bindings = <
-&slash_preg 0 QMARK  &kp BSLH  &kp STAR  &kp AMPS  &kp LBRC  &kp RBRC      &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp LT     &kp DEL
-&excl_abre 0 EXCL  &kp PIPE   &kp PLUS  &kp EQUAL  &kp LBKT  &kp RBKT      &kp LEFT  &kp DOWN   &kp UP       &kp RIGHT  &kp CARET &caps_word
-&ctrl_arroba LCTRL AT  &kp FSLH   &kp MINUS &kp UNDER  &kp LPAR  &kp RPAR      &kp GRAVE &kp TILDE    &kp DLLR   &kp PRCNT  &kp GT     &kp HASH
+&slash_preg 0 QMARK  &kp FSLH  &kp LT    &kp MINUS &kp LBRC  &kp RBRC      &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp AMPS   &kp AT
+&excl_abre 0 EXCL  &kp STAR   &kp PLUS  &kp UNDER  &kp LBKT  &kp RBKT      &kp LEFT  &kp DOWN   &kp UP       &kp RIGHT  &kp CARET &caps_word
+&kp LCTRL  &kp BSLH   &kp GT    &kp EQUAL  &kp LPAR  &kp RPAR      &kp GRAVE &kp TILDE    &kp DLLR   &kp PRCNT  &kp PIPE   &kp HASH
                         &kp LSHFT &trans  &kp SPACE               &kp RET  &trans  &kp BSPC
             >;
         };
 
-        // 6: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: VS Code (arriba: sel. linea, duplicar, definicion, renombrar, buscar archivo, paleta).
-        // VS Code: medio der. Ctrl+Shift+K borrar linea; fila de abajo: Alt+flechas mover linea, Ctrl+Shift+L sel. coincidencias,
+        // 6: Raise (pulgar izquierdo). Izquierda: numerico. Derecha: VS Code (arriba: sel./duplicar/borrar linea, buscar en proyecto, buscar archivo, paleta).
+        // VS Code: medio: volver atras/adelante, sidebar, terminal, chat AI; fila de abajo: Alt+flechas mover linea, Ctrl+Shift+L sel. coincidencias,
         //          Shift+Alt+I cursores, Alt+Shift+F formatear, Ctrl+F5 ejecutar.
         raise_layer {
             display-name = "Raise";
             bindings = <
-&kp DEL          &kp FSLH   &kp STAR  &kp N7  &kp N8  &kp N9        &kp LC(L)         &kp LS(LA(DOWN)) &kp F12         &kp F2         &kp LC(P)       &kp LC(LS(P))
-&kp RET          &kp MINUS  &kp PLUS  &kp N4  &kp N5  &kp N6        &kp LG(LEFT)      &kp LG(RIGHT)   &kp LC(B)        &kp LC(GRAVE)  &kp LC(LA(B))   &kp LC(LS(K))
-&kp SQT          &kp DQT    &kp DOT   &kp N1  &kp N2  &kp N3        &kp LA(UP)        &kp LA(DOWN)    &kp LC(LS(L))    &kp LA(LS(I))  &kp LC(FSLH)    &kp LC(F5)
-                         &kp BSPC  &trans  &kp N0           &kp RET  &trans  &kp TAB
+&kp DEL          &kp FSLH   &kp MINUS &kp N7  &kp N8  &kp N9        &kp LC(L)         &kp LS(LA(DOWN)) &kp LC(LS(K))   &kp LC(LS(F))  &kp LC(P)       &kp LC(LS(P))
+&kp RET          &kp STAR   &kp PLUS  &kp N4  &kp N5  &kp N6        &kp LA(LEFT)      &kp LA(RIGHT)   &kp LC(W)        &kp LC(B)      &kp LC(GRAVE)   &kp LC(LA(B))
+&pies_pulg DQT SQT  &kp DOT    &kp N0    &kp N1  &kp N2  &kp N3        &kp LA(UP)        &kp LA(DOWN)    &kp LC(LS(L))    &kp LA(LS(I))  &kp LC(FSLH)    &kp LC(F5)
+                         &kp BSPC  &trans  &kp SPACE        &kp RET  &trans  &kp TAB
             >;
         };
 
@@ -606,8 +615,8 @@
             display-name = "Extra";
             bindings = <
 &none           &none  &kp F1   &kp F2   &kp F3   &kp F4      &kp C_PLAY_PAUSE  &kp C_PREV         &kp C_NEXT  &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP
-&tog COLEMAK    &kp CAPS  &kp F5   &kp F6   &kp F7   &kp F8      &m_desk_izq       &m_desk_der         &kp LG(LS(LEFT))  &kp LG(LS(RIGHT))  &kp LG(V)  &none
-&none           &tog MOUSE  &kp F9   &kp F10  &kp F11  &kp F12     &ext_power EP_ON  &ext_power EP_OFF  &bt BT_PRV  &bt BT_NXT  &bt BT_CLR  &kp LG(L)
+&tog COLEMAK    &kp CAPS  &kp F5   &kp F6   &kp F7   &kp F8      &m_desk_izq       &m_desk_der         &none             &none              &none      &none
+&none           &tog MOUSE  &kp F9   &kp F10  &kp F11  &kp F12     &kp LG(LEFT)      &kp LG(RIGHT)      &bt BT_PRV  &bt BT_NXT  &bt BT_CLR  &kp LG(L)
                                &trans  &trans  &kp SPACE    &kp RET  &trans  &kp RALT
             >;
         };
