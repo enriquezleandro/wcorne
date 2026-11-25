@@ -590,9 +590,9 @@
         lower_layer {
             display-name = "Lower";
             bindings = <
-&slash_preg 0 QMARK  &kp FSLH  &kp LT    &kp MINUS &kp LBRC  &kp RBRC      &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp AMPS   &kp AT
+&slash_preg 0 QMARK  &kp FSLH  &kp MINUS &kp LT    &kp LBRC  &kp RBRC      &kp HOME  &kp PG_DN  &kp PG_UP  &kp END    &kp AMPS   &kp AT
 &excl_abre 0 EXCL  &kp STAR   &kp PLUS  &kp UNDER  &kp LBKT  &kp RBKT      &kp LEFT  &kp DOWN   &kp UP       &kp RIGHT  &kp CARET &caps_word
-&kp LCTRL  &kp BSLH   &kp GT    &kp EQUAL  &kp LPAR  &kp RPAR      &kp GRAVE &kp TILDE    &kp DLLR   &kp PRCNT  &kp PIPE   &kp HASH
+&kp LCTRL  &kp BSLH   &kp EQUAL &kp GT     &kp LPAR  &kp RPAR      &kp GRAVE &kp TILDE    &kp DLLR   &kp PRCNT  &kp PIPE   &kp HASH
                         &kp LSHFT &trans  &kp SPACE               &kp RET  &trans  &kp BSPC
             >;
         };
