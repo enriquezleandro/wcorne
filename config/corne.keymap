@@ -346,6 +346,16 @@
             bindings = <&kp>, <&kp>;
         };
 
+        // Win (pulgar der. de afuera): toque = buscador (Win+S), mantener = Win normal.
+        // hold-preferred: apenas tocas otra tecla mientras la mantenes, cuenta como Win.
+        win_buscar: win_buscar {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&kp>;
+        };
+
         // Raise: toque = ' (pies), mantener = " (pulgadas)
         pies_pulg: pies_pulg {
             compatible = "zmk,behavior-hold-tap";
@@ -535,7 +545,7 @@
 &esc_dictar LC(SPACE) ESC  &kp Q  &kp W  &tilde_e 0 E  &edicion F2 R  &kp T        &kp Y  &tilde_u 0 U  &tilde_i 0 I      &tilde_o 0 O    &kp P     &esc_traducir 0 DEL
 &kp LSHFT      &tilde_a 0 A  &kp S  &kp D  &edicion LG(E) F  &kp G        &kp H  &kp J  &kp K      &kp L    &semi_enie 0 0  &kp TAB
 &ctrl_alttab    &edicion LC(LS(E)) Z  &edicion LC(X) X  &edicion LC(C) C  &edicion LC(V) V  &kp B        &edicion LC(LS(N)) N  &kp M  &kp COMMA  &kp DOT  &kp SQT  &kp BSPC
-                   &kp LALT  &td_raise_apps  &kp SPACE        &kp RET  &mo LOWER  &kp LGUI
+                   &kp LALT  &td_raise_apps  &kp SPACE        &kp RET  &mo LOWER  &win_buscar LGUI LG(S)
             >;
         };
 
